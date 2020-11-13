@@ -24,7 +24,7 @@ CREATE TABLE employee_personal_details (
     last_name VARCHAR (50) NOT NULL,
     primary key(id),
     role_id INTEGER NOT NULL references employee_role_details(id),
-    manager_id INTEGER references employee_role_details(manager_id)
+    manager_id INTEGER references employee_role_details(manager_num)
 );
 
 INSERT INTO company_department (department_name)
