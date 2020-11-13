@@ -22,7 +22,6 @@ let initPrompt = () => {
         .then((option) => {
 
             switch (true) {
-
                 case option.start_prompts == initalPrompts[0]:
                     server.getAllEmployees();
                     break;

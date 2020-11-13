@@ -33,7 +33,7 @@ let getAllManagers = () => {
         if (err) throw err;
         
         result.forEach(mgr => {
-            let mgr_name = `${mgr.first_name} ${mgr.last_name}`;
+            let mgr_name = (`${mgr.first_name} ${mgr.last_name}`);
             manager_array.push(mgr_name);
         })
     });
@@ -105,12 +105,3 @@ module.exports = {
     end_program,
     manager_array
 }
-/*
-exports.getAllEmployees = getAllEmployees;
-exports.getAllDepartments = getAllDepartments;
-exports.getAllManagers = getAllManagers;
-exports.employeesByDept = employeesByDept;
-exports.employeesByManager = employeesByManager;
-exports.department_array = department_array;
-exports.manager_array = manager_array;
-*/
