@@ -11,8 +11,10 @@ let connection = mysql.createConnection({
     database: "employee_records_db"
   });
 
+const all_staff = [];
 const department_array = [];
 const manager_array = [];
+const employee_roles =[];
 
 let getAllDepartments = () => {
 
@@ -39,6 +41,19 @@ let getAllManagers = () => {
     });
 }
 
+let getEmployeeRoles = () => {
+
+    connection.query(`SELECT employee_title FROM employee_role_details`, function(err, result){
+
+        if (err) throw err;
+        
+        result.forEach(role => {
+            employee_roles.push(role.employee_title);
+        })
+    });
+
+}
+
 let getAllEmployees = () => {
 
     connection.query(`SELECT employee_personal_details.first_name, employee_personal_details.last_name, 
@@ -48,7 +63,11 @@ let getAllEmployees = () => {
                     ORDER BY employee_role_details.employee_salary DESC;`, function(err, result){
 
             if (err) throw err;
-
+            
+            result.forEach(item => {
+                let employee_name = (`${item.first_name} ${item.last_name}`);
+                all_staff.push(employee_name);
+            });
             console.table(result);
             inquirer.initPrompt();
         });
@@ -87,6 +106,18 @@ let employeesByManager = (manager_name,manager_id) => {
         });
 }
 
+let addNewEmployee = (first_name, last_name, role_id, manager_id) => {
+
+    connection.query(`INSERT INTO employee_personal_details (first_name, last_name, role_id, manager_id)
+                        VALUES ('${first_name}','${last_name}',${role_id},'${manager_id}');`, function(err, result){
+
+            if (err) throw err;
+
+            console.log(`New Employee Added`);
+            inquirer.initPrompt();
+        });
+}
+
 let end_program = () => {
 
     connection.end(function(err) {
@@ -96,12 +127,16 @@ let end_program = () => {
       });
 }
 module.exports = {
+    getEmployeeRoles,
     getAllEmployees,
     getAllDepartments,
     getAllManagers,
     employeesByDept,
     employeesByManager,
-    department_array,
+    addNewEmployee,
     end_program,
+    department_array,
+    all_staff,
+    employee_roles,
     manager_array
 }
