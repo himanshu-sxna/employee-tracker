@@ -2,14 +2,10 @@ const inquirer = require("inquirer");
 const server = require("./server");
 
 const initalPrompts = ["View all Employees", "View all Employees by Department", "View all Employees by Manager", 
-                        "Add Employee", "Remove Employee", "Update Employee Role","Update Employee Manager",
-                        "Remove Role", "Remove Department","Add Department", "Quit"];
+                        "Add Employee", "Remove Employee", "Update Employee Role","Update Employee Manager","Quit"];
 
-server.getAllDepartments();
-server.getAllManagers();
-server.getEmployeeRoles();
 
-let initPrompt = () => {
+let initPrompt = () => { 
 
     inquirer
         .prompt([
@@ -36,27 +32,16 @@ let initPrompt = () => {
                     addEmployee();
                     break;
                 case option.start_prompts == initalPrompts[4]:
-                    console.log(option.start_prompts);
+                    removeEmployee();
                     break;
                 case option.start_prompts == initalPrompts[5]:
-                    console.log(option.start_prompts);
+                    updateRole();
                     break;
                 case option.start_prompts == initalPrompts[6]:
-                    console.log(option.start_prompts);
+                    updateManager();
                     break;
                 case option.start_prompts == initalPrompts[7]:
-                    console.log(option.start_prompts);
-                    break;
-                case option.start_prompts == initalPrompts[8]:
-                    console.log(option.start_prompts);
-                    break;
-                case option.start_prompts == initalPrompts[9]:
-                    console.log(option.start_prompts);
-                    break;
-                case option.start_prompts == initalPrompts[10]:
                     server.end_program();
-                    break;
-                default:
                     break;
             }
         });
@@ -90,7 +75,7 @@ let getAllEmployeesbyManager = () => {
             }
         ])
         .then((option)=> {
-            let mgr_num = (server.manager_array.indexOf(option.mgr_choice) + 1);
+            let mgr_num = (server.manager_array.find(({name}) => name === option.mgr_choice )).id;
             server.employeesByManager(option.mgr_choice, mgr_num);
         }) 
 }
@@ -132,30 +117,96 @@ let addEmployee =() => {
         ])
         .then((option)=> {
 
-            let role_id = (server.employee_roles.indexOf(option.role) + 1);
+            let role_id = (server.employee_roles.find(({name})=> name === option.role)).id;
             let manager_id;
-            switch (true) {
-                case role_id === 6 || role_id === 7:
+            switch (role_id) {
+                case 6 || 7:
                     manager_id = 3;
                     break;
-                case role_id === 8:
+                case 8:
                     manager_id = 1;
-                    break;
-                case role_id === 9:
+                case 9:
                     manager_id = 2;
                     break;
-                case role_id === 10:
+                case 10:
                     manager_id = 4;
                     break;
-                case role_id === 11:
+                case 11:
                     manager_id = 5;
                     break;
-                default:
-                    manager_id = null;
-                    break;
-            }
+            };
             server.addNewEmployee(option.first_name, option.last_name, role_id, manager_id);
         })
+}
+
+let removeEmployee = () => {
+
+    inquirer
+        .prompt([
+            {
+                name: "employee_name",
+                type: "list",
+                message: "Please select Employee to remove",
+                choices: server.all_staff
+            }
+        ])
+        .then((option)=> {
+            let employee_to_remove = server.all_staff.find(({name})=> name === option.employee_name);
+            server.removeEmployee(option.employee_name, employee_to_remove.id);
+        })
+}
+
+let updateRole = () => {
+
+    inquirer
+        .prompt([
+            {
+                name: "employee",
+                type: "list",
+                message: "Please choose employee to update:",
+                choices: server.all_staff
+            },
+            {
+                name: "role",
+                type: "list",
+                message: "Please choose new role:",
+                choices: server.employee_roles
+            }
+        ])
+        .then((option) => {
+
+            let employee_to_update = server.all_staff.find(({name})=> name === option.employee).id;
+            let updated_role = server.employee_roles.find(({name}) => name === option.role).id;
+
+            server.updateEmployeeRole(employee_to_update, updated_role);
+        })
+}
+
+let updateManager = () => {
+
+        inquirer
+            .prompt([
+                {
+                    name: "employee",
+                    type: "list",
+                    message: "Please choose employee:",
+                    choices: server.all_staff
+                },
+                {
+                    name: "manager",
+                    type: "list",
+                    message: "Please choose new manager:",
+                    choices: server.manager_array
+                }
+            ])
+            .then((option) => {
+
+                let employee_to_update = server.all_staff.find(({name})=> name === option.employee).id;
+                let new_manager = server.manager_array.find(({name}) => name === option.manager).id;
+
+                server.updateEmployeeManager(employee_to_update, new_manager);
+            })
+
 }
 
 exports.initPrompt = initPrompt;

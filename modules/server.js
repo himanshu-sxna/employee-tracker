@@ -18,38 +18,64 @@ const employee_roles =[];
 
 let getAllDepartments = () => {
 
-    connection.query(`SELECT department_name FROM company_department;`, function(err, result){
+    connection.query(`SELECT department_name, id FROM company_department;`, function(err, result){
 
         if (err) throw err;
 
         result.forEach(dept => {
-            department_array.push(dept.department_name);
+            let dept_details = {
+                name: dept.department_name,
+                id: dept.id
+            };
+            department_array.push(dept_details);
         });
     });
 }
 
 let getAllManagers = () => {
 
-    connection.query(`SELECT first_name, last_name FROM employee_personal_details WHERE manager_id IS NULL;`, function(err, result){
+    connection.query(`SELECT id, first_name, last_name FROM employee_personal_details WHERE manager_id IS NULL OR 0;`, function(err, result){
 
         if (err) throw err;
         
         result.forEach(mgr => {
             let mgr_name = (`${mgr.first_name} ${mgr.last_name}`);
-            manager_array.push(mgr_name);
-        })
+            let mgr_details = {
+                name: mgr_name,
+                id: mgr.id
+            }
+            manager_array.push(mgr_details);
+        });
+    });
+}
+
+let getAllStaff = () => {
+
+    connection.query(`SELECT id, first_name, last_name FROM employee_personal_details WHERE manager_id is NOT NULL;`, function(err, result){
+
+        result.forEach(staff => {
+            let staff_details = {
+                name: `${staff.first_name} ${staff.last_name}`,
+                id: staff.id
+            };
+            all_staff.push(staff_details);
+        });
     });
 }
 
 let getEmployeeRoles = () => {
 
-    connection.query(`SELECT employee_title FROM employee_role_details`, function(err, result){
+    connection.query(`SELECT employee_title, id FROM employee_role_details WHERE manager_num IS NULL`, function(err, result){
 
         if (err) throw err;
         
         result.forEach(role => {
-            employee_roles.push(role.employee_title);
-        })
+            let role_details = {
+                name: role.employee_title,
+                id: role.id
+            };
+            employee_roles.push(role_details);
+        });
     });
 
 }
@@ -64,10 +90,6 @@ let getAllEmployees = () => {
 
             if (err) throw err;
             
-            result.forEach(item => {
-                let employee_name = (`${item.first_name} ${item.last_name}`);
-                all_staff.push(employee_name);
-            });
             console.table(result);
             inquirer.initPrompt();
         });
@@ -106,16 +128,54 @@ let employeesByManager = (manager_name,manager_id) => {
         });
 }
 
-let addNewEmployee = (first_name, last_name, role_id, manager_id) => {
+let addNewEmployee = (first_name, last_name, role_id, manger_id) => {
 
-    connection.query(`INSERT INTO employee_personal_details (first_name, last_name, role_id, manager_id)
-                        VALUES ('${first_name}','${last_name}',${role_id},'${manager_id}');`, function(err, result){
+    connection.query(`INSERT INTO employee_personal_details (first_name, last_name,role_id, manager_id)
+                        VALUES ('${first_name}','${last_name}',${role_id}, ${manger_id});`, function(err, result){
 
             if (err) throw err;
 
             console.log(`New Employee Added`);
+            getAllStaff();
             inquirer.initPrompt();
         });
+}
+
+let removeEmployee = (employee_name, employee_id) => {
+
+    connection.query(`DELETE FROM employee_records_db.employee_personal_details WHERE id = ${employee_id};`, function(err, result){
+
+        if (err) throw(err);
+
+        console.log(`${employee_name}'s details have been removed.`);
+        getAllStaff();
+        inquirer.initPrompt();
+    })
+}
+
+let updateEmployeeRole =(id, role) => {
+
+    connection.query(`UPDATE employee_personal_details SET role_id = ${role} WHERE id = ${id};`, function(err, result){
+
+        if(err) throw (err);
+
+        console.log(`Employee role has been updated`)
+        inquirer.initPrompt();
+        getAllStaff();
+    })
+
+
+}
+
+let updateEmployeeManager = (employee_id, manager_num) => {
+
+    connection.query(`UPDATE employee_personal_details SET manager_id = ${manager_num} WHERE id = ${employee_id};`, function(err, result){
+
+        if(err) throw(err);
+
+        console.log(`Updated Manager for employee id: ${employee_id}`);
+        inquirer.initPrompt()
+    })
 }
 
 let end_program = () => {
@@ -127,6 +187,7 @@ let end_program = () => {
       });
 }
 module.exports = {
+    getAllStaff,
     getEmployeeRoles,
     getAllEmployees,
     getAllDepartments,
@@ -134,6 +195,9 @@ module.exports = {
     employeesByDept,
     employeesByManager,
     addNewEmployee,
+    removeEmployee,
+    updateEmployeeRole,
+    updateEmployeeManager,
     end_program,
     department_array,
     all_staff,

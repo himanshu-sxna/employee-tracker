@@ -34,7 +34,7 @@ VALUES ("Sales"),
         ("Finance"),
         ("Admin");
 
-INSERT INTO employee_role_details (employee_title, employee_salary, is_manager, manager_id, dept_id)
+INSERT INTO employee_role_details (employee_title, employee_salary, is_manager, manager_num, dept_id)
 VALUES ("Sales Manager", 85000, TRUE, 1, 1),
 		("Legal Manager", 125000, TRUE, 2, 2),
         ("CTO", 150000, TRUE, 3, 3),

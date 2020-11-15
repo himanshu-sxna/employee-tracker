@@ -4,6 +4,7 @@ const figlet = require("figlet");
 
 //Local Module Imports
 const inquirer = require("./modules/inquirer");
+const server = require("./modules/server.js");
 
 // app Title style
 console.log(
@@ -12,5 +13,12 @@ console.log(
     )
 );
 
+server.getAllStaff();
+server.getAllDepartments();
+server.getAllManagers();
+server.getEmployeeRoles();
+
 // initaite inquirer
 inquirer.initPrompt();
+
+
