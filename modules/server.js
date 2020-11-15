@@ -11,6 +11,8 @@ let connection = mysql.createConnection({
     database: "employee_records_db"
   });
 
+ // arrays to store objects for all employees, roles and managers
+ // these arrays are used as choices for inquirer functions 
 const all_staff = [];
 const department_array = [];
 const manager_array = [];

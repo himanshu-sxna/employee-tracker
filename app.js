@@ -13,6 +13,7 @@ console.log(
     )
 );
 
+//initiate server js functions
 server.getAllStaff();
 server.getAllDepartments();
 server.getAllManagers();

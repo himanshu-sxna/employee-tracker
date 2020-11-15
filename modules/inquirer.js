@@ -1,10 +1,12 @@
 const inquirer = require("inquirer");
 const server = require("./server");
 
+//array for initial questions
 const initalPrompts = ["View all Employees", "View all Employees by Department", "View all Employees by Manager", 
                         "Add Employee", "Remove Employee", "Update Employee Role","Update Employee Manager","Quit"];
 
 
+// initial queris that trigger respective functions based on responses
 let initPrompt = () => { 
 
     inquirer
@@ -47,6 +49,7 @@ let initPrompt = () => {
         });
 }
 
+// below functions get details for initiated queries and call server js functions to qury data
 let getAllEmployeesbyDept = () => {
     
     inquirer
