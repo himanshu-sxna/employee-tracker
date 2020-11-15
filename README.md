@@ -1,7 +1,7 @@
 # Employee Management System
 
 ![Node 14.3.1](https://img.shields.io/badge/node-14.3.1-red)
-![MySQL]((https://img.shields.io/badge/db-MySQL-red))
+![MySQL](https://img.shields.io/badge/db-MySQL-red)
 ![inquirer](https://img.shields.io/badge/npm-inquirer-orange)
 ![mysql](https://img.shields.io/badge/npm-mysql--system-orange)
 ![License Badge](https://img.shields.io/badge/license-MIT-green)
